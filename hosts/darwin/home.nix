@@ -8,6 +8,7 @@
   imports = [
     ../../modules/shared/home-manager.nix
     ../../modules/shared/dev
+    ../../modules/shared/accounts
     ../../modules/aspects/features/shell/default.nix
   ];
 
@@ -25,6 +26,14 @@
   };
 
   programs.home-manager.enable = true;
+
+  local.mail = {
+    enable = true;
+    address = "mtoth575@gmail.com";
+    realName = "Matus Toth";
+  };
+
+  local.calendar.enable = true;
 
   home.sessionPath = [ "/opt/homebrew/bin" "/opt/homebrew/sbin" "$HOME/.local/bin" "$HOME/go/bin" ];
 
