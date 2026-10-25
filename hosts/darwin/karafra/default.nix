@@ -32,26 +32,13 @@ in
   local.hushlogin.enable = true;
   local.vscode.enable = true;
 
+  local.gitSigning.enable = true;
+
   programs.git = {
     enable = true;
-    signing = {
-      format = "ssh";
-      key = "~/.ssh/id_ed25519.pub";
-      signByDefault = true;
-    };
     settings = {
       user.name = "Karafra";
       user.email = "55988328+karafra@users.noreply.github.com";
-      gpg.ssh.allowedSignersFile = "~/.config/git/allowed_signers";
     };
   };
-
-  home.activation.writeGitAllowedSigners = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    key_file="$HOME/.ssh/id_ed25519.pub"
-    if [ -r "$key_file" ]; then
-      mkdir -p "$HOME/.config/git"
-      printf '%s %s\n' "${config.programs.git.settings.user.email}" "$(tr -d '\n' < "$key_file")" > "$HOME/.config/git/allowed_signers"
-      chmod 600 "$HOME/.config/git/allowed_signers"
-    fi
-  '';
 }
