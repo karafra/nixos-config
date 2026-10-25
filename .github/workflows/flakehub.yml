@@ -1,0 +1,29 @@
+name: Publish to FlakeHub
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: flakehub-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  flakehub:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # authenticate against FlakeHub
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-nix
+      - name: Push to FlakeHub
+        uses: DeterminateSystems/flakehub-push@v7
+        with:
+          visibility: unlisted
+          rolling: true
