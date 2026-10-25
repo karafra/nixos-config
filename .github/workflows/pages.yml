@@ -38,7 +38,9 @@ jobs:
       - name: Build site
         working-directory: docs
         run: |
-          { printf -- '---\nlayout: default\ntitle: nixos-config\n---\n'; cat README.md; } > index.md
+          # Translate GitHub alerts (> [!NOTE]) into Chirpy prompts
+          perl -0pe 'BEGIN { %m = (NOTE => "info", IMPORTANT => "info", TIP => "tip", WARNING => "warning", CAUTION => "danger") } s/^> \[!(NOTE|IMPORTANT|TIP|WARNING|CAUTION)\]\n((?:>.*\n?)+)/$2\n{: .prompt-$m{$1} }\n/mg' README.md > body.md
+          { printf -- '---\nlayout: default\ntitle: nixos-config\n---\n'; cat body.md; } > index.md
           sed "s|@FLAKEHUB_FLAKE@|${{ github.repository }}|" \
             ../scripts/install-macos.sh > install.sh
           bundle exec jekyll build --destination ../_site --baseurl "${{ steps.pages.outputs.base_path }}"

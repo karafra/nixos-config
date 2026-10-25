@@ -9,6 +9,7 @@ workflows:
         - 'determinatesystems/determinate-nix-action@main'
         - 'determinatesystems/magic-nix-cache-action@main'
     '.github/workflows/ci.yml': []
+    '.github/workflows/dependabot-automerge.yml': []
     '.github/workflows/flake-checker.yml':
         - 'actions/checkout@v7.0.1'
         - 'determinatesystems/flake-checker-action@main'

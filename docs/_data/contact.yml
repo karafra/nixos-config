@@ -8,7 +8,7 @@
 - type: email
   icon: "fas fa-envelope"
   noblank: true # open link in current tab
-  url: "mailto:karafra@karafra.net"
+  url: "mailto:admin@karafra.net"
 
 - type: rss
   icon: "fas fa-rss"

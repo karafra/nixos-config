@@ -8,3 +8,4 @@ docs/Gemfile.lock
 docs/index.md
 docs/install.sh
 _site
+docs/body.md
