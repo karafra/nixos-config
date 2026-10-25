@@ -31,6 +31,6 @@ jobs:
       - name: Build ${{ inputs.name }}
         run: nix build --print-build-logs --out-link result ".#${{ inputs.attr }}"
       - name: Attest build provenance
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v1.4.4
         with:
           subject-path: result
