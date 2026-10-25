@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ inputs.os }}
     steps:
       - uses: actions/checkout@v7.0.1
-      - uses: ./.github/actions/setup-nix
+      - uses: $/.github/actions/setup-nix
       - name: Build ${{ inputs.name }}
         run: nix build --print-build-logs --out-link result ".#${{ inputs.attr }}"
       - name: Compute output digest

@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.4.0
-      - uses: ./.github/actions/setup-nix
+      - uses: $/.github/actions/setup-nix
       - uses: DeterminateSystems/flakehub-push@main
         with:
           visibility: unlisted
@@ -104,7 +104,7 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             --verify-tag --generate-notes --title "${{ steps.version.outputs.tag }}"
 
-      - uses: ./.github/actions/setup-nix
+      - uses: $/.github/actions/setup-nix
         if: steps.version.outputs.skip == 'false'
 
       - name: Publish to FlakeHub
