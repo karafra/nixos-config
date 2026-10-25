@@ -39,7 +39,7 @@
   local.gh.user = "karafra";
   # local.gh.tokenSecret = "data/github_token";
 
-  home.sessionPath = [ "/opt/homebrew/bin" "/opt/homebrew/sbin" "$HOME/.local/bin" "$HOME/go/bin" ];
+  home.sessionPath = [ "$HOME/.local/bin" "$HOME/go/bin" ];
 
   programs.git.enable = true;
 
@@ -66,7 +66,6 @@
     ];
 
     profileExtra = ''
-      eval "$(/opt/homebrew/bin/brew shellenv zsh)"
       [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
     '';
   };
