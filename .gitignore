@@ -4,3 +4,7 @@ result
 secrets/*.age
 .idea/
 target/
+docs/Gemfile.lock
+docs/index.md
+docs/install.sh
+_site

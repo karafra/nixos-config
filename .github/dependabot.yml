@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/setup-nix
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: bundler
+    directory: /docs
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: nix
+    directory: /
+    schedule:
+      interval: weekly

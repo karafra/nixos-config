@@ -1,0 +1,25 @@
+theme: jekyll-theme-chirpy
+lang: en
+title: nixos-config
+tagline: NixOS and nix-darwin configurations
+description: Personal NixOS and macOS configurations, published as a flake on FlakeHub.
+url: "https://karafra.github.io"
+github:
+  username: karafra
+social:
+  name: karafra
+  links:
+    - https://github.com/karafra
+theme_mode: dark
+toc: true
+assets:
+  self_host:
+    enabled: true
+pwa:
+  enabled: false
+sass:
+  style: compressed
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
