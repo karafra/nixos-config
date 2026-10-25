@@ -9,6 +9,7 @@
     ../../modules/shared/home-manager.nix
     ../../modules/shared/dev
     ../../modules/shared/accounts
+    ../../modules/shared/sops-key
     ../../modules/shared/wallpaper
     ../../modules/shared/terminal
     ../../modules/shared/desktop
@@ -20,8 +21,9 @@
 
   sops = {
     defaultSopsFile = ../../secrets/secrets.yaml;
-    age.keyFile = "/var/lib/sops-nix/key.txt";
   };
+
+  local.sopsUserKey.enable = true;
 
   sops.secrets."data/git_email" = {
     sopsFile = ../../secrets/secrets.yaml;
@@ -35,7 +37,8 @@
 
   # Enable mail, calendar and the GitHub token once their keys exist in secrets/secrets.yaml.
   local.mail = {
-    enable = false;
+    enable = true;
+    appleMail.enable = true;
     address = "mtoth575@gmail.com";
     realName = "Matus Toth";
   };
