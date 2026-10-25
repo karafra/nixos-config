@@ -81,6 +81,7 @@
 
         specialArgs = {
           username = "karafra";
+          hostname = "nixos";
         };
       };
     };

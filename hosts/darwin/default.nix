@@ -1,6 +1,13 @@
-{ pkgs, lib, username, ... }:
+{ pkgs, lib, username, hostname, ... }:
+
+let
+  host = import ../../lib/hostname.nix { };
+  locale = import ../../lib/locale.nix { };
+in
 
 {
+  networking = host.networking hostname;
+
   system.primaryUser = username;
   system.stateVersion = 5;
 
@@ -14,6 +21,11 @@
   };
 
   programs.zsh.enable = true;
+
+  system.defaults.CustomUserPreferences = locale.preferences {
+    languages = [ "en-SK" ];
+    layout = { id = 252; name = "ABC"; };
+  };
 
   home-manager = {
     useGlobalPkgs = true;
