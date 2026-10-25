@@ -12,9 +12,6 @@ social:
     - https://github.com/karafra
 theme_mode: dark
 toc: true
-assets:
-  self_host:
-    enabled: true
 pwa:
   enabled: false
 sass:
@@ -23,3 +20,4 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+avatar: https://github.com/karafra.png

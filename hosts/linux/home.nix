@@ -7,6 +7,7 @@
 
   imports = [
     ../../modules/shared/home-manager.nix
+    ../../modules/shared/dev
     ../../modules/home-manager/default.nix
     ../../modules/aspects/features/shell/default.nix
   ];
