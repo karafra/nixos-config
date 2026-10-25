@@ -5,6 +5,7 @@ on:
     branches: [main, master]
     paths:
       - scripts/install-macos.sh
+      - docs/**
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -30,11 +31,17 @@ jobs:
       - name: Build site
         run: |
           mkdir _site
+          { printf -- '---\n---\n'; cat docs/README.md; } > _site/index.md
+          printf 'theme: jekyll-theme-minimal\ntitle: nixos-config\n' > _site/_config.yml
           sed "s|@FLAKEHUB_FLAKE@|${{ github.repository }}|" \
             scripts/install-macos.sh > _site/install.sh
       - uses: actions/configure-pages@v6.0.0
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./_site
+          destination: ./_pages
       - uses: actions/upload-pages-artifact@v5.0.0
         with:
-          path: _site
+          path: _pages
       - id: deployment
         uses: actions/deploy-pages@v5.0.1
