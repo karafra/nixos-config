@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [ main, master ]
   pull_request:
   workflow_dispatch:
 
@@ -14,11 +14,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  flake-checker:
+  check-flakes:
+    name: Check flakes
     uses: ./.github/workflows/flake-checker.yml
 
   nixos:
     uses: ./.github/workflows/build-config.yml
+    name: Build NixOS configuration
     with:
       name: nixos nodebook
       os: ubuntu-latest
@@ -26,6 +28,7 @@ jobs:
 
   darwin:
     uses: ./.github/workflows/build-config.yml
+    name: Build Nix-darwin configuration
     with:
       name: darwin macbook
       os: macos-latest
