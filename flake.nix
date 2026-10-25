@@ -58,17 +58,10 @@
         inherit system;
 
         modules = [
-          ./hosts/${hostname}/configuration.nix
-          ./modules/shared/default.nix
-          ./modules/system/default.nix
+          ./hosts/linux
           nixos-hardware.nixosModules.common-pc-laptop
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username}.imports = [ ./home/karafra/default.nix ];
-          }
         ];
 
         specialArgs = {
@@ -76,31 +69,19 @@
         };
       };
 
-      darwinConfigurations.macbook =
-        let
-          macUser = "matustoth";
-        in
-        nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
+      darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
 
-          modules = [
-            ./hosts/macbook/configuration.nix
-            home-manager.darwinModules.home-manager
-            sops-nix.darwinModules.sops
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "backup";
-              home-manager.users.${macUser}.imports = [
-                ./home/matustoth/default.nix
-                sops-nix.homeManagerModules.sops
-              ];
-            }
-          ];
+        modules = [
+          ./hosts/darwin
+          home-manager.darwinModules.home-manager
+          sops-nix.darwinModules.sops
+          { home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ]; }
+        ];
 
-          specialArgs = {
-            username = macUser;
-          };
+        specialArgs = {
+          username = "karafra";
         };
+      };
     };
 }

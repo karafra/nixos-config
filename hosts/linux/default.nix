@@ -1,7 +1,18 @@
 { config, pkgs, lib, username, hostname, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [
+    ./hardware-configuration.nix
+    ../../modules/shared/default.nix
+    ../../modules/system/default.nix
+  ];
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = { inherit username; };
+    users.${username}.imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

@@ -1,8 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-@REPO_URL@}"
-TARGET_DIR="${TARGET_DIR:-$HOME/nixos}"
+# FlakeHub flake (<owner>/<name>); FLAKE_VERSION may be a version or "*" for the latest release.
+FLAKEHUB_FLAKE="${FLAKEHUB_FLAKE:-@FLAKEHUB_FLAKE@}"
+FLAKE_VERSION="${FLAKE_VERSION:-*}"
 DARWIN_HOST="${DARWIN_HOST:-macbook}"
 SOPS_KEY_DIR="/var/lib/sops-nix"
 SOPS_KEY_FILE="$SOPS_KEY_DIR/key.txt"
@@ -13,7 +14,8 @@ die() { printf '\033[1;31merror: %s\033[0m\n' "$*" >&2; exit 1; }
 
 [ "$(uname -s)" = "Darwin" ] || die "this script only supports macOS"
 [ "$(id -u)" -ne 0 ] || die "run as your normal user, not root (sudo is requested when needed)"
-case "$REPO_URL" in @*) die "REPO_URL is not set" ;; esac
+case "$FLAKEHUB_FLAKE" in @*) die "FLAKEHUB_FLAKE is not set" ;; esac
+FLAKE_URL="https://flakehub.com/f/${FLAKEHUB_FLAKE}/${FLAKE_VERSION}.tar.gz"
 
 log "Requesting sudo"
 sudo -v
@@ -32,15 +34,6 @@ fi
 [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ] \
     && . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
-if [ -d "$TARGET_DIR/.git" ]; then
-    log "Updating $TARGET_DIR"
-    git -C "$TARGET_DIR" pull --ff-only
-else
-    log "Cloning $REPO_URL into $TARGET_DIR"
-    git clone "$REPO_URL" "$TARGET_DIR"
-fi
-cd "$TARGET_DIR"
-
 if sudo test -f "$SOPS_KEY_FILE"; then
     log "Using existing sops age key"
 else
@@ -56,7 +49,7 @@ else
         printf '\033[1;31m'
         echo "A NEW age key was generated, so existing secrets cannot be decrypted by it."
         echo "Public key: $(sudo grep -o 'age1[a-z0-9]*' "$SOPS_KEY_FILE" | head -n1)"
-        echo "Add it to .sops.yaml and run 'sops updatekeys secrets/secrets.yaml' from a machine that has a working key."
+        echo "Add it to .sops.yaml and run 'sops updatekeys secrets/secrets.yaml' from a checkout of the repo on a machine that has a working key."
         printf '\033[0m'
     fi
 fi
@@ -69,12 +62,12 @@ for f in /etc/zshrc /etc/bashrc /etc/zprofile /etc/nix/nix.conf; do
     fi
 done
 
-log "Applying configuration ${DARWIN_HOST}"
+log "Applying ${FLAKE_URL}#${DARWIN_HOST}"
 export NIXPKGS_ALLOW_UNFREE=1
 if command -v darwin-rebuild >/dev/null 2>&1; then
-    sudo -H darwin-rebuild switch --flake ".#${DARWIN_HOST}"
+    sudo -H darwin-rebuild switch --refresh --flake "${FLAKE_URL}#${DARWIN_HOST}"
 else
-    sudo -H env "PATH=$PATH" nix "${NIX_FLAGS[@]}" run nix-darwin -- switch --flake ".#${DARWIN_HOST}"
+    sudo -H env "PATH=$PATH" nix "${NIX_FLAGS[@]}" run nix-darwin -- switch --refresh --flake "${FLAKE_URL}#${DARWIN_HOST}"
 fi
 
 log "Done. Open a new terminal to pick up the new shell configuration."

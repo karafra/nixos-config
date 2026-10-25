@@ -1,8 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, username, ... }:
 
 {
-  home.username = "karafra";
-  home.homeDirectory = "/home/karafra";
+  home.username = username;
+  home.homeDirectory = "/home/${username}";
   home.stateVersion = "24.11";
 
   imports = [
@@ -13,13 +13,7 @@
 
   programs.home-manager.enable = true;
 
-  programs.git = {
-    enable = true;
-    settings = {
-      user.name = "karafra";
-      user.email = "you@example.com";
-    };
-  };
+  programs.git.enable = true;
 
   programs.zsh = {
     enable = true;

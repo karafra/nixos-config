@@ -13,4 +13,4 @@ jobs:
     name: Check flakes
     steps:
       - uses: actions/checkout@v7.0.1
-      - uses: DeterminateSystems/flake-checker-action@v14
+      - uses: DeterminateSystems/flake-checker-action@main

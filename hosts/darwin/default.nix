@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, lib, username, ... }:
 
 {
   system.primaryUser = username;
@@ -14,6 +14,14 @@
   };
 
   programs.zsh.enable = true;
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    backupFileExtension = "backup";
+    extraSpecialArgs = { inherit username; };
+    users.${username}.imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
+  };
 
   environment.systemPackages = with pkgs; [
     age

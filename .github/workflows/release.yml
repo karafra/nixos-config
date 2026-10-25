@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version component to bump when creating a release branch
+        type: choice
+        options: [ minor, major ]
+        default: minor
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  rolling:
+    if: github.event_name == 'push' && !startsWith(github.ref_name, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.4.0
+      - uses: $/.github/actions/setup-nix
+      - uses: DeterminateSystems/flakehub-push@main
+        with:
+          visibility: unlisted
+          rolling: true
+
+  release:
+    if: >-
+      startsWith(github.ref_name, 'release/') ||
+      (github.event_name == 'workflow_dispatch' && github.ref_name == github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.4.0
+        with:
+          fetch-depth: 0
+
+      - name: Create release branch
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          BUMP: ${{ inputs.bump }}
+        # language=bash
+        run: |
+          # Releases start at 0.2.0 because FlakeHub rolling versions use 0.1.x.
+          latest=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          latest=${latest:-v0.1.0}
+          IFS=. read -r major minor _ <<< "${latest#v}"
+          if [ "$BUMP" = "major" ]; then
+            major=$(( major + 1 )); minor=0
+          else
+            minor=$(( minor + 1 ))
+          fi
+          branch="release/${major}.${minor}.x"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "::error::$branch already exists"
+            exit 1
+          fi
+          git push origin "HEAD:refs/heads/$branch"
+          echo "RELEASE_BRANCH=$branch" >> "$GITHUB_ENV"
+
+      - name: Compute version
+        id: version
+        # language=bash
+        run: |
+          branch="${RELEASE_BRANCH:-$GITHUB_REF_NAME}"
+          if [[ ! "$branch" =~ ^release/([0-9]+)\.([0-9]+)\.x$ ]]; then
+            echo "::error::'$branch' does not match release/<major>.<minor>.x"
+            exit 1
+          fi
+          series="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+
+          # Nothing to do if this commit is already released.
+          existing=$(git tag --points-at HEAD --list "v${series}.*" | head -n1)
+          if [ -n "$existing" ]; then
+            echo "::notice::HEAD is already released as $existing"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          last=$(git tag --merged HEAD --list "v${series}.*" --sort=-v:refname | head -n1)
+          patch=0
+          [ -z "$last" ] || patch=$(( ${last##*.} + 1 ))
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "tag=v${series}.${patch}" >> "$GITHUB_OUTPUT"
+
+      - name: Create tag
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
+
+      - name: Create GitHub release
+        if: steps.version.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # language=bash
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --verify-tag --generate-notes --title "${{ steps.version.outputs.tag }}"
+
+      - uses: $/.github/actions/setup-nix
+        if: steps.version.outputs.skip == 'false'
+
+      - name: Publish to FlakeHub
+        if: steps.version.outputs.skip == 'false'
+        uses: DeterminateSystems/flakehub-push@main
+        with:
+          visibility: unlisted
+          tag: ${{ steps.version.outputs.tag }}
