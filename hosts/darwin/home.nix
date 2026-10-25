@@ -35,6 +35,14 @@
 
   local.calendar.enable = true;
 
+  local.gh.user = "karafra";
+
+  sops.secrets."data/github_token" = { };
+
+  programs.zsh.initContent = ''
+    [ -r "${config.sops.secrets."data/github_token".path}" ] && export GH_TOKEN="$(< "${config.sops.secrets."data/github_token".path}")"
+  '';
+
   home.sessionPath = [ "/opt/homebrew/bin" "/opt/homebrew/sbin" "$HOME/.local/bin" "$HOME/go/bin" ];
 
   programs.git.enable = true;
