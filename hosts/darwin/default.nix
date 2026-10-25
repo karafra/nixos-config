@@ -45,14 +45,6 @@ in
 
   fonts.packages = [ pkgs.nerd-fonts.fira-code ];
 
-  homebrew = {
-    enable = true;
-    casks = [
-      "macs-fan-control"
-      "t9s"
-    ];
-  };
-
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
   sops.age.keyFile = "/var/lib/sops-nix/key.txt";
   sops.secrets."data/git_email" = { };
