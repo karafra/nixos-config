@@ -4,7 +4,7 @@
 version: 'v0.0.3'
 workflows:
     '.github/workflows/build-config.yml':
-        - 'actions/attest-build-provenance@v1.4.4'
+        - 'actions/attest-build-provenance@v4.2.2'
         - 'actions/checkout@v7.0.1'
         - 'determinatesystems/determinate-nix-action@main'
         - 'determinatesystems/magic-nix-cache-action@main'
@@ -19,34 +19,23 @@ workflows:
         - 'actions/upload-pages-artifact@v5.0.0'
         - 'ruby/setup-ruby@v1.335.0'
     '.github/workflows/release.yml':
-        - 'actions/checkout@v4.4.0'
+        - 'actions/checkout@v7.0.1'
         - 'determinatesystems/determinate-nix-action@main'
         - 'determinatesystems/flakehub-push@main'
         - 'determinatesystems/magic-nix-cache-action@main'
 dependencies:
-    'actions/attest-build-provenance@36fa7d009e22618ca7cd599486979b8150596c74':
-        ref: 'predicate@1.1.4'
-        commit: 'sha1-36fa7d009e22618ca7cd599486979b8150596c74'
-        owner_id: 44036562
-        repo_id: 760702757
-    'actions/attest-build-provenance@v1.4.4':
-        ref: 'v1.4.4'
-        commit: 'sha1-ef244123eb79f2f7a7e75d99086184180e6d0018'
+    'actions/attest-build-provenance@v4.2.2':
+        ref: 'v4.2.2'
+        commit: 'sha1-4d101475d8b20a2381f78447822ac1eab6504dd8'
         owner_id: 44036562
         repo_id: 760702757
         uses:
-            - 'actions/attest-build-provenance@36fa7d009e22618ca7cd599486979b8150596c74'
-            - 'actions/attest@67422f5511b7ff725f4dbd6fb9bd2cd925c65a8d'
-    'actions/attest@67422f5511b7ff725f4dbd6fb9bd2cd925c65a8d':
-        ref: 'v1.4.1'
-        commit: 'sha1-67422f5511b7ff725f4dbd6fb9bd2cd925c65a8d'
+            - 'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d'
+    'actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d':
+        ref: 'v4.2.1'
+        commit: 'sha1-508db95dd578ae2727ebd6217d5ba78e4fbda05d'
         owner_id: 44036562
         repo_id: 760701061
-    'actions/checkout@v4.4.0':
-        ref: 'v4.4.0'
-        commit: 'sha1-11d5960a326750d5838078e36cf38b85af677262'
-        owner_id: 44036562
-        repo_id: 197814629
     'actions/checkout@v7.0.1':
         ref: 'v7.0.1'
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
