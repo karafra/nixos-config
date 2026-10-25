@@ -22,7 +22,7 @@ jobs:
     if: github.event_name == 'push' && !startsWith(github.ref_name, 'release/')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.4.0
+      - uses: actions/checkout@v7.0.1
       - uses: $/.github/actions/setup-nix
       - uses: DeterminateSystems/flakehub-push@main
         with:
@@ -35,7 +35,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' && github.ref_name == github.event.repository.default_branch)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.4.0
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
