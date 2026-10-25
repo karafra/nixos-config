@@ -13,6 +13,7 @@
     ../../modules/shared/terminal
     ../../modules/shared/desktop
     ../../modules/shared/hushlogin
+    ../../modules/shared/vscode
     ../../modules/aspects/features/shell/default.nix
   ];
 

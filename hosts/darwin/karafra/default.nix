@@ -30,6 +30,7 @@ in
   local.wallpaper.image = ./wallpaper.jpg;
   local.desktop.iconArrangement = "grid";
   local.hushlogin.enable = true;
+  local.vscode.enable = true;
 
   programs.git = {
     enable = true;
@@ -46,8 +47,11 @@ in
   };
 
   home.activation.writeGitAllowedSigners = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    mkdir -p "$HOME/.config/git"
-    printf '%s %s\n' "you@example.com" "$(tr -d '\n' < ${config.sops.secrets."data/ssh_public_key".path})" > "$HOME/.config/git/allowed_signers"
-    chmod 600 "$HOME/.config/git/allowed_signers"
+    key_file="$HOME/.ssh/id_ed25519.pub"
+    if [ -r "$key_file" ]; then
+      mkdir -p "$HOME/.config/git"
+      printf '%s %s\n' "${config.programs.git.settings.user.email}" "$(tr -d '\n' < "$key_file")" > "$HOME/.config/git/allowed_signers"
+      chmod 600 "$HOME/.config/git/allowed_signers"
+    fi
   '';
 }
