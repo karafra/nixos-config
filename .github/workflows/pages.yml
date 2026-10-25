@@ -1,0 +1,40 @@
+name: Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - scripts/install-macos.sh
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint installer
+        run: shellcheck scripts/install-macos.sh
+      - name: Build site
+        run: |
+          mkdir _site
+          sed "s|@REPO_URL@|https://github.com/${{ github.repository }}.git|" \
+            scripts/install-macos.sh > _site/install.sh
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v5

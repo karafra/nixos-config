@@ -1,0 +1,60 @@
+#!/bin/sh -e
+
+ESC=$(printf '\033')
+GREEN="${ESC}[1;32m"
+RED="${ESC}[1;31m"
+YELLOW="${ESC}[1;33m"
+NC="${ESC}[0m"
+
+APP_SYSTEM=${1:?missing app system}
+SCRIPT_NAME=${2:?missing script name}
+shift 2
+
+NIXOS_HOST="nodebook"
+DARWIN_HOST="macbook"
+
+case "$SCRIPT_NAME" in
+    build) ACTION="build" ;;
+    build-switch) ACTION="switch" ;;
+    *)
+        echo "${RED}Unsupported app: $SCRIPT_NAME${NC}"
+        exit 1
+        ;;
+esac
+
+run_linux() {
+    echo "${YELLOW}Starting ${ACTION} for ${NIXOS_HOST}...${NC}"
+    if [ "$ACTION" = "build" ]; then
+        /run/current-system/sw/bin/nixos-rebuild build --flake ".#${NIXOS_HOST}" "$@"
+    else
+        /run/current-system/sw/bin/nixos-rebuild switch --sudo --flake ".#${NIXOS_HOST}" "$@"
+    fi
+}
+
+run_darwin() {
+    flake_system="darwinConfigurations.${DARWIN_HOST}.system"
+
+    export NIXPKGS_ALLOW_UNFREE=1
+
+    echo "${YELLOW}Starting build for ${flake_system}...${NC}"
+    nix --extra-experimental-features 'nix-command flakes' build ".#${flake_system}" "$@"
+
+    if [ "$ACTION" = "switch" ]; then
+        echo "${YELLOW}Switching to new generation...${NC}"
+        sudo ./result/sw/bin/darwin-rebuild switch --flake ".#${DARWIN_HOST}"
+    fi
+
+    echo "${YELLOW}Cleaning up...${NC}"
+    unlink ./result
+}
+
+case "$APP_SYSTEM" in
+    *-linux) run_linux "$@" ;;
+    aarch64-darwin) run_darwin "$@" ;;
+    *)
+        echo "${RED}Unsupported app system: $APP_SYSTEM${NC}"
+        exit 1
+        ;;
+esac
+
+echo "${GREEN}Done!${NC}"

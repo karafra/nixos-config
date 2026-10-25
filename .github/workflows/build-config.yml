@@ -1,0 +1,30 @@
+name: Build configuration
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Human-readable configuration name
+        required: true
+        type: string
+      os:
+        description: Runner label
+        required: true
+        type: string
+      attr:
+        description: Flake output attribute to build
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ inputs.name }}
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-nix
+      - name: Build ${{ inputs.name }}
+        run: nix build --print-build-logs ".#${{ inputs.attr }}"

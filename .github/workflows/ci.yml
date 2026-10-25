@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flake-checker:
+    uses: ./.github/workflows/flake-checker.yml
+
+  nixos:
+    uses: ./.github/workflows/build-config.yml
+    with:
+      name: nixos nodebook
+      os: ubuntu-latest
+      attr: nixosConfigurations.nodebook.config.system.build.toplevel
+
+  darwin:
+    uses: ./.github/workflows/build-config.yml
+    with:
+      name: darwin macbook
+      os: macos-latest
+      attr: darwinConfigurations.macbook.system

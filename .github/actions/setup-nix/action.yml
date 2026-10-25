@@ -1,0 +1,10 @@
+name: Setup Nix
+description: Install Nix with Determinate Systems (the repository must already be checked out)
+
+runs:
+  using: composite
+  steps:
+    - uses: DeterminateSystems/determinate-nix-action@main
+    - name: Show Nix version
+      shell: bash
+      run: nix --version
