@@ -39,8 +39,8 @@ in
       signByDefault = true;
     };
     settings = {
-      user.name = "karafra";
-      user.email = "you@example.com";
+      user.name = "Karafra";
+      user.email = "55988328+karafra@users.noreply.github.com";
       gpg.ssh.allowedSignersFile = "~/.config/git/allowed_signers";
     };
   };
