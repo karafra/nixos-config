@@ -1,6 +1,7 @@
 {
   imports = [
     ./calendar
+    ./github
     ./mail
   ];
 }
