@@ -20,13 +20,19 @@ in
 
       postscriptName = lib.mkOption {
         type = lib.types.str;
-        default = "FiraCodeNFM-Reg";
+        default = "FiraCodeNFM-Light";
         description = "PostScript name used by macOS Terminal.app.";
+      };
+
+      weight = lib.mkOption {
+        type = lib.types.str;
+        default = "Light";
+        description = "Font weight used by WezTerm.";
       };
 
       size = lib.mkOption {
         type = lib.types.int;
-        default = 13;
+        default = 12;
         description = "Font size in points.";
       };
     };
@@ -39,7 +45,7 @@ in
       enable = true;
       extraConfig = ''
         return {
-          font = wezterm.font("${cfg.font.family}"),
+          font = wezterm.font("${cfg.font.family}", { weight = "${cfg.font.weight}" }),
           font_size = ${toString cfg.font.size}.0,
         }
       '';

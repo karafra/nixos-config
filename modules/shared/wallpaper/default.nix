@@ -19,7 +19,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.image != null && pkgs.stdenv.isDarwin) {
+  config = lib.mkIf (cfg.image != null && pkgs.stdenv.hostPlatform.isDarwin) {
     home.file."Pictures/wallpaper${cfg.extension}".source = cfg.image;
 
     home.activation.setWallpaper = lib.hm.dag.entryAfter [ "linkGeneration" ] ''

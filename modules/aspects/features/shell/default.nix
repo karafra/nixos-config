@@ -50,6 +50,9 @@ in
     };
     sessionVariables = {
       ZSH_CACHE_DIR = "$HOME/.cache/zsh";
+      # Empty values disable the default bold/magenta match highlight.
+      HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND = "";
+      HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND = "";
     };
     initContent = lib.mkMerge [
       (lib.mkOrder 500 ''
@@ -57,6 +60,9 @@ in
         bindkey "^[[1;5D" backward-word
       '')
       ''
+        _newline_between_prompts() { _newline_between_prompts() { print; }; }
+        precmd_functions+=(_newline_between_prompts)
+
         if command -v , >/dev/null 2>&1; then
           command_not_found_handler() { , "$@"; }
         fi

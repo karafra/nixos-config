@@ -6,6 +6,7 @@ let
 in
 
 {
+  imports = [ ../../modules/system/touchid ];
   networking = host.networking hostname;
 
   system.primaryUser = username;

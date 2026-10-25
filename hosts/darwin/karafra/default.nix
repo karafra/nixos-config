@@ -7,6 +7,7 @@ in
   targets.darwin.defaults."com.apple.dock" = {
     orientation = "bottom";
     tilesize = 50;
+    show-recents = false;
     persistent-apps = map dock.app [
       "/System/Applications/Apps.app"
       "/System/Applications/App Store.app"
@@ -21,6 +22,14 @@ in
       "/System/Applications/TV.app"
     ];
   };
+
+  home.activation.restartDock = lib.hm.dag.entryAfter [ "setDarwinDefaults" ] ''
+    /usr/bin/killall Dock || true
+  '';
+
+  local.wallpaper.image = ./wallpaper.jpg;
+  local.desktop.iconArrangement = "grid";
+  local.hushlogin.enable = true;
 
   programs.git = {
     enable = true;

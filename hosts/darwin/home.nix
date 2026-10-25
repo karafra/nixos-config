@@ -9,6 +9,10 @@
     ../../modules/shared/home-manager.nix
     ../../modules/shared/dev
     ../../modules/shared/accounts
+    ../../modules/shared/wallpaper
+    ../../modules/shared/terminal
+    ../../modules/shared/desktop
+    ../../modules/shared/hushlogin
     ../../modules/aspects/features/shell/default.nix
   ];
 
