@@ -57,7 +57,9 @@ in
         bindkey "^[[1;5D" backward-word
       '')
       ''
-        command_not_found_handler() { , "$@"; }
+        if command -v , >/dev/null 2>&1; then
+          command_not_found_handler() { , "$@"; }
+        fi
       ''
     ];
     shellAliases = {

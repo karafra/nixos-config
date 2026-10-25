@@ -25,6 +25,8 @@
 
   programs.home-manager.enable = true;
 
+  home.sessionPath = [ "/opt/homebrew/bin" "/opt/homebrew/sbin" ];
+
   programs.git = {
     enable = true;
     signing = {

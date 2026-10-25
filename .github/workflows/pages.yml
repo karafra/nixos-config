@@ -24,7 +24,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - name: Lint installer
         run: shellcheck scripts/install-macos.sh
       - name: Build site
@@ -32,9 +32,9 @@ jobs:
           mkdir _site
           sed "s|@REPO_URL@|https://github.com/${{ github.repository }}.git|" \
             scripts/install-macos.sh > _site/install.sh
-      - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/configure-pages@v6.0.0
+      - uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: _site
       - id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v5.0.1

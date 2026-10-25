@@ -20,8 +20,8 @@ jobs:
       id-token: write # authenticate against FlakeHub
       contents: read
     steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/setup-nix
+      - uses: actions/checkout@v7.0.1
+      - uses: $/.github/actions/setup-nix
       - name: Push to FlakeHub
         uses: DeterminateSystems/flakehub-push@v7
         with:
