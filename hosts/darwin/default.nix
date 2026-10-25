@@ -6,7 +6,12 @@ let
 in
 
 {
-  imports = [ ../../modules/system/touchid ];
+  imports = [
+    ../../modules/system/touchid
+    ../../modules/system/sops-key
+  ];
+
+  local.sopsKey.enable = true;
   networking = host.networking hostname;
 
   system.primaryUser = username;
