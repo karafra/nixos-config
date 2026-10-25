@@ -10,8 +10,8 @@ APP_SYSTEM=${1:?missing app system}
 SCRIPT_NAME=${2:?missing script name}
 shift 2
 
-NIXOS_HOST="nodebook"
-DARWIN_HOST="macbook"
+NIXOS_HOST="linux"
+DARWIN_HOST="darwin"
 
 case "$SCRIPT_NAME" in
     build) ACTION="build" ;;

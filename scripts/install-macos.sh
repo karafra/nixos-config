@@ -4,7 +4,7 @@ set -euo pipefail
 # FlakeHub flake (<owner>/<name>); FLAKE_VERSION may be a version or "*" for the latest release.
 FLAKEHUB_FLAKE="${FLAKEHUB_FLAKE:-@FLAKEHUB_FLAKE@}"
 FLAKE_VERSION="${FLAKE_VERSION:-*}"
-DARWIN_HOST="${DARWIN_HOST:-macbook}"
+DARWIN_HOST="${DARWIN_HOST:-darwin}"
 SOPS_KEY_DIR="/var/lib/sops-nix"
 SOPS_KEY_FILE="$SOPS_KEY_DIR/key.txt"
 NIX_FLAGS=(--extra-experimental-features "nix-command flakes")

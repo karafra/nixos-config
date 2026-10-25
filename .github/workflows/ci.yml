@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, master, "release/*.*.x"]
+    branches:
+      - main
+      - release/*.*.x
   pull_request:
   workflow_dispatch:
 
@@ -23,15 +25,17 @@ jobs:
   nixos:
     uses: ./.github/workflows/build-config.yml
     name: Build NixOS configuration
+    needs: [ check-flakes ]
     with:
-      name: nixos nodebook
+      name: nixos linux
       os: ubuntu-latest
-      attr: nixosConfigurations.nodebook.config.system.build.toplevel
+      attr: nixosConfigurations.linux.config.system.build.toplevel
 
   darwin:
     uses: ./.github/workflows/build-config.yml
     name: Build Nix-darwin configuration
+    needs: [ check-flakes ]
     with:
-      name: darwin macbook
+      name: darwin darwin
       os: macos-latest
-      attr: darwinConfigurations.macbook.system
+      attr: darwinConfigurations.darwin.system

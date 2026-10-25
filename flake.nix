@@ -34,7 +34,7 @@
     }:
     let
       system = "x86_64-linux";
-      hostname = "nodebook";
+      hostname = "linux";
       username = "karafra";
 
       mkApp = scriptName: system: {
@@ -69,7 +69,7 @@
         };
       };
 
-      darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+      darwinConfigurations.darwin = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
 
         modules = [

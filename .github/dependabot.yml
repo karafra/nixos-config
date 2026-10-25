@@ -5,7 +5,7 @@ updates:
       - /
       - /.github/actions/setup-nix
     schedule:
-      interval: weekly
+      interval: daily
     groups:
       actions:
         patterns: ["*"]
@@ -13,9 +13,9 @@ updates:
   - package-ecosystem: bundler
     directory: /docs
     schedule:
-      interval: weekly
+      interval: daily
 
   - package-ecosystem: nix
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
