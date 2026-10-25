@@ -2,12 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      bump:
-        description: Version component to bump when creating a release branch
-        type: choice
-        options: [ minor, major ]
-        default: minor
 
 permissions:
   contents: write
@@ -18,17 +12,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  rolling:
-    if: github.event_name == 'push' && !startsWith(github.ref_name, 'release/')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: $/.github/actions/setup-nix
-      - uses: DeterminateSystems/flakehub-push@main
-        with:
-          visibility: unlisted
-          rolling: true
-
   release:
     if: >-
       startsWith(github.ref_name, 'release/') ||
@@ -40,20 +23,14 @@ jobs:
           fetch-depth: 0
 
       - name: Create release branch
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          BUMP: ${{ inputs.bump }}
+        if: github.event_name == 'workflow_dispatch' && github.ref_name == github.event.repository.default_branch
         # language=bash
         run: |
           # Releases start at 0.2.0 because FlakeHub rolling versions use 0.1.x.
           latest=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
           latest=${latest:-v0.1.0}
           IFS=. read -r major minor _ <<< "${latest#v}"
-          if [ "$BUMP" = "major" ]; then
-            major=$(( major + 1 )); minor=0
-          else
-            minor=$(( minor + 1 ))
-          fi
+          minor=$(( minor + 1 ))
           branch="release/${major}.${minor}.x"
           if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
             echo "::error::$branch already exists"
