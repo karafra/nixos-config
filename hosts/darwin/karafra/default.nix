@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ lib, ... }:
 
 let
   dock = import ../../../lib/dock.nix { inherit lib; };
@@ -7,7 +7,7 @@ in
   targets.darwin.defaults."com.apple.dock" = {
     orientation = "bottom";
     tilesize = 50;
-    show-recents = false;
+  show-recents = false;
     persistent-apps = map dock.app [
       "/System/Applications/Apps.app"
       "/System/Applications/App Store.app"
