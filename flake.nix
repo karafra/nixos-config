@@ -16,6 +16,11 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
+    nvim-config = {
+      url = "github:karafra/nvim-config";
+      flake = false;
+    };
+
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,6 +34,7 @@
       home-manager,
       sops-nix,
       nixos-hardware,
+      nvim-config,
       nix-darwin,
       ...
     }:
@@ -62,6 +68,7 @@
           nixos-hardware.nixosModules.common-pc-laptop
           home-manager.nixosModules.home-manager
           sops-nix.nixosModules.sops
+          { home-manager.extraSpecialArgs = { inherit nvim-config; }; }
         ];
 
         specialArgs = {
@@ -76,6 +83,7 @@
           ./hosts/darwin
           home-manager.darwinModules.home-manager
           sops-nix.darwinModules.sops
+          { home-manager.extraSpecialArgs = { inherit nvim-config; }; }
           { home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ]; }
         ];
 
