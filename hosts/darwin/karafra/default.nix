@@ -32,6 +32,8 @@ in
   local.hushlogin.enable = true;
   local.vscode.enable = true;
 
+  local.neovim.enable = true;
+
   local.gitSigning.enable = true;
 
   programs.git = {
