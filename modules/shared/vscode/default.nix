@@ -15,7 +15,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # VS Code itself is installed system-wide, so only manage its settings here.
     programs.vscode = {
       enable = true;
       package = null;

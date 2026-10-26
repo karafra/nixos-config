@@ -1,5 +1,7 @@
 # nixos-config
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/karafra/nixos-config)
+
 Collection of NixOs configurations for my personal use. This repository is a flake, so you can use it as a flake input
 in your own flake.
 
