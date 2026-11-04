@@ -4,9 +4,6 @@
     <img src="https://devin.ai/assets/deepwiki-badge.png" alt="Ask DeepWiki" height="20" style="width: auto; max-width: none;">
 </a>
 
-Collection of NixOs configurations for my personal use. This repository is a flake, so you can use it as a flake input
-in your own flake.
-
 > [!NOTE]
 > To install this configuration on fresh system, you can use the following command:
 > ```bash
