@@ -7,6 +7,12 @@
     ../../modules/system/default.nix
   ];
 
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:karafra/nixos-config/main";
+    dates = "*:0/10";
+  };
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

@@ -13,6 +13,7 @@
     ../../modules/shared/wallpaper
     ../../modules/shared/terminal
     ../../modules/shared/desktop
+    ../../modules/shared/dock
     ../../modules/shared/hushlogin
     ../../modules/shared/vscode
     ../../modules/shared/neovim
@@ -34,6 +35,10 @@
     sopsFile = ../../secrets/secrets.yaml;
   };
 
+  sops.secrets."data/kubeconfig" = {
+    sopsFile = ../../secrets/secrets.yaml;
+  };
+
   programs.home-manager.enable = true;
 
   # Enable mail, calendar and the GitHub token once their keys exist in secrets/secrets.yaml.
@@ -50,6 +55,7 @@
   # local.gh.tokenSecret = "data/github_token";
 
   home.sessionPath = [ "$HOME/.local/bin" "$HOME/go/bin" ];
+  home.sessionVariables.KUBECONFIG = config.sops.secrets."data/kubeconfig".path;
 
   programs.git.enable = true;
 

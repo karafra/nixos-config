@@ -23,10 +23,7 @@ in
     ];
   };
 
-  home.activation.restartDock = lib.hm.dag.entryAfter [ "setDarwinDefaults" ] ''
-    /usr/bin/killall Dock || true
-  '';
-
+  local.dock.enable = true;
   local.wallpaper.image = ./wallpaper.jpg;
   local.desktop.iconArrangement = "grid";
   local.hushlogin.enable = true;
