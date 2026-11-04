@@ -1,4 +1,4 @@
-{ pkgs, lib, username, hostname, ... }:
+{ config, pkgs, lib, username, hostname, ... }:
 
 let
   host = import ../../lib/hostname.nix { };
@@ -8,6 +8,7 @@ in
 {
   imports = [
     ../../modules/system/touchid
+    ../../modules/system/darwin-upgrade
     ../../modules/system/sops-key
   ];
 
@@ -17,7 +18,10 @@ in
   system.primaryUser = username;
   system.stateVersion = 5;
 
-  users.users.${username}.home = "/Users/${username}";
+  users.users.${username} = {
+    home = "/Users/${username}";
+    uid = 501;
+  };
 
   nixpkgs.config.allowUnfree = true;
 
@@ -27,6 +31,12 @@ in
   };
 
   programs.zsh.enable = true;
+
+  local.darwinUpgrade = {
+    enable = true;
+    user = username;
+    flake = "github:karafra/nixos-config/main#darwin";
+  };
 
   system.defaults.CustomUserPreferences = locale.preferences {
     languages = [ "en-SK" ];
