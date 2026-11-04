@@ -62,10 +62,6 @@ in
       ''
         _newline_between_prompts() { _newline_between_prompts() { print; }; }
         precmd_functions+=(_newline_between_prompts)
-
-        if command -v , >/dev/null 2>&1; then
-          command_not_found_handler() { , "$@"; }
-        fi
       ''
     ];
     shellAliases = {
