@@ -32,6 +32,7 @@
     firefox
     gnomeExtensions.appindicator
     htop
+    jetbrains.rust-rover
     lf
     neovim
     obsidian

@@ -58,6 +58,7 @@ in
     yq
     comma
     sops
+    jetbrains.rust-rover
     vscode
   ];
 

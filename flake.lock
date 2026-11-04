@@ -90,11 +90,11 @@
     "nvim-config": {
       "flake": false,
       "locked": {
-        "lastModified": 1792990109,
-        "narHash": "sha256-52959L5qZQRac2Ib6LC2jENBRzi/PU+iCu4L4P+3Pl4=",
+        "lastModified": 1793802082,
+        "narHash": "sha256-+j4FWA5iGnI59FDBnKGwUsEFTu0d6xseu5PXqQf+SQ4=",
         "owner": "karafra",
         "repo": "nvim-config",
-        "rev": "231cd498a7a65fa193aca2c7686098a1a3dc60b7",
+        "rev": "b7a6bcb475df2370921077e05e72125eb48911fa",
         "type": "github"
       },
       "original": {
