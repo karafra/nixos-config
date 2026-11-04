@@ -21,7 +21,7 @@ in
 
     interval = lib.mkOption {
       type = lib.types.int;
-      default = 600;
+      default = 3600;
       description = "Seconds between upgrade attempts.";
     };
   };
@@ -40,10 +40,14 @@ in
           exit 0
         fi
         exec /bin/launchctl asuser ${toString uid} \
-          /run/current-system/sw/bin/darwin-rebuild switch --flake ${lib.escapeShellArg cfg.flake}
+          /run/current-system/sw/bin/darwin-rebuild switch --max-jobs 1 --cores 1 --flake ${lib.escapeShellArg cfg.flake}
       '');
       serviceConfig = {
         RunAtLoad = true;
+        ProcessType = "Background";
+        LowPriorityIO = true;
+        LowPriorityBackgroundIO = true;
+        Nice = 19;
         StartInterval = cfg.interval;
         StandardOutPath = "/var/log/darwin-upgrade.log";
         StandardErrorPath = "/var/log/darwin-upgrade.log";

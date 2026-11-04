@@ -55,6 +55,8 @@ in
     age
     git
     jq
+    yq
+    comma
     sops
     vscode
   ];
