@@ -13,6 +13,7 @@
     ../../modules/shared/wallpaper
     ../../modules/shared/terminal
     ../../modules/shared/desktop
+    ../../modules/shared/dock
     ../../modules/shared/hushlogin
     ../../modules/shared/vscode
     ../../modules/shared/neovim
