@@ -10,9 +10,14 @@ in
     ../../modules/system/touchid
     ../../modules/system/darwin-upgrade
     ../../modules/system/sops-key
+    ../../modules/system/warp
   ];
 
   local.sopsKey.enable = true;
+  local.warp = {
+    enable = true;
+    team = "karafra-net";
+  };
   networking = host.networking hostname;
 
   system.primaryUser = username;
