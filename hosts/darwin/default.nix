@@ -62,6 +62,7 @@ in
     jq
     yq
     comma
+    helm-docs
     sops
     jetbrains.rust-rover
     vscode
