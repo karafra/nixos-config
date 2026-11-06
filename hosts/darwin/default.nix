@@ -60,6 +60,8 @@ in
     age
     git
     jq
+    jsonnet-bundler
+    jsonnet
     yq
     comma
     helm-docs
