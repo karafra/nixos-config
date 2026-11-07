@@ -10,9 +10,14 @@ in
     ../../modules/system/touchid
     ../../modules/system/darwin-upgrade
     ../../modules/system/sops-key
+    ../../modules/system/warp
   ];
 
   local.sopsKey.enable = true;
+  local.warp = {
+    enable = false;
+    team = "karafra-net";
+  };
   networking = host.networking hostname;
 
   system.primaryUser = username;
@@ -55,8 +60,11 @@ in
     age
     git
     jq
+    jsonnet-bundler
+    jsonnet
     yq
     comma
+    helm-docs
     sops
     jetbrains.rust-rover
     vscode
