@@ -26,7 +26,6 @@
 
   home.packages = with pkgs; [
     alacritty
-    brave
     chezmoi
     discord
     firefox

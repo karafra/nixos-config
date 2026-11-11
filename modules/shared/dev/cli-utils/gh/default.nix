@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   cfg = config.local.gh;
@@ -12,6 +12,7 @@ in
 
   config.programs.gh = {
     enable = true;
+    extensions = [ pkgs.gh-actions-lock ];
     settings = {
       git_protocol = "https";
       prompt = "enabled";
