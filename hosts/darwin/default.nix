@@ -15,7 +15,7 @@ in
 
   local.sopsKey.enable = true;
   local.warp = {
-    enable = false;
+    enable = true;
     team = "karafra-net";
   };
   networking = host.networking hostname;

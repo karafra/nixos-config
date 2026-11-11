@@ -13,6 +13,8 @@ let
     </plist>
   '';
   warpApp = "${pkgs.cloudflare-warp}/Applications/Cloudflare WARP.app";
+  primaryUser = config.system.primaryUser;
+  primaryHome = config.users.users.${primaryUser}.home;
 in
 {
   options.local.warp = {
@@ -25,23 +27,92 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.cloudflare-warp ];
+  config = lib.mkMerge [
+    (lib.mkIf cfg.enable {
+      environment.systemPackages = [ pkgs.cloudflare-warp ];
 
-    system.activationScripts.postActivation.text = lib.mkOrder 2000 ''
-      install -d -m 755 -o root -g wheel "/Library/Managed Preferences"
-      install -m 644 -o root -g wheel ${plist} "/Library/Managed Preferences/com.cloudflare.warp.plist"
-    '';
+      system.activationScripts.postActivation.text = lib.mkOrder 2000 ''
+        install -d -m 755 -o root -g wheel "/Library/Managed Preferences"
+        install -m 644 -o root -g wheel ${plist} "/Library/Managed Preferences/com.cloudflare.warp.plist"
+        ln -sfn ${warpApp} "/Applications/Nix Apps/Cloudflare WARP.app"
+        rm -f "/Library/LaunchDaemons/com.cloudflare.warp.updater.plist"
+      '';
 
-    launchd.user.agents.cloudflare-warp = {
-      serviceConfig = {
-        ProgramArguments = [
-          "/usr/bin/open"
-          "-a"
-          warpApp
-        ];
-        RunAtLoad = true;
+      launchd.daemons.cloudflare-warp-daemon = {
+        serviceConfig = {
+          Label = "com.cloudflare.1dot1dot1dot1.macos.warp.daemon";
+          ProgramArguments = [ "${warpApp}/Contents/Resources/CloudflareWARP" ];
+          KeepAlive = true;
+          RunAtLoad = true;
+          UserName = "root";
+          SoftResourceLimits.NumberOfFiles = 32768;
+        };
       };
-    };
-  };
+
+      launchd.user.agents.cloudflare-warp = {
+        serviceConfig = {
+          ProgramArguments = [
+            "/usr/bin/open"
+            "-a"
+            warpApp
+          ];
+          RunAtLoad = true;
+        };
+      };
+    })
+    (lib.mkIf (!cfg.enable) {
+      system.activationScripts.postActivation.text = lib.mkOrder 2000 ''
+        preferences="/Library/Managed Preferences/com.cloudflare.warp.plist"
+        app="/Applications/Nix Apps/Cloudflare WARP.app"
+        user=${lib.escapeShellArg primaryUser}
+        home=${lib.escapeShellArg primaryHome}
+        uid="$(id -u "$user")"
+
+        for label in org.nixos.cloudflare-warp org.nixos.warp-gui; do
+          agent="$home/Library/LaunchAgents/$label.plist"
+          if [ -f "$agent" ]; then
+            target="$(/usr/libexec/PlistBuddy -c 'Print :ProgramArguments:2' "$agent")"
+            case "$target" in
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app)
+                if launchctl print "gui/$uid/$label" >/dev/null 2>&1; then
+                  launchctl bootout "gui/$uid/$label"
+                fi
+                rm "$agent"
+                ;;
+              *)
+                echo "Leaving $agent in place: it does not point to the Nix Warp app." >&2
+                ;;
+            esac
+          fi
+        done
+
+        while read -r pid processUid command; do
+          if [ "$processUid" = "$uid" ]; then
+            case "$command" in
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP|\
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *)
+                kill "$pid"
+                ;;
+            esac
+          fi
+        done < <(ps -axo pid=,uid=,command=)
+
+        if [ -f "$preferences" ]; then
+          if cmp -s ${plist} "$preferences"; then
+            rm "$preferences"
+          else
+            echo "Leaving $preferences in place: it does not match the configured Warp preferences." >&2
+          fi
+        fi
+
+        if [ -L "$app" ]; then
+          case "$(readlink "$app")" in
+            /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app)
+              rm "$app"
+              ;;
+          esac
+        fi
+      '';
+    })
+  ];
 }
