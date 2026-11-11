@@ -6,6 +6,8 @@ runs:
   steps:
     - uses: DeterminateSystems/determinate-nix-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
+      with:
+        use-flakehub: false
     - name: Show Nix version
       shell: bash
       run: nix --version

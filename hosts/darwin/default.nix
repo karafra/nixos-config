@@ -53,7 +53,12 @@ in
     useUserPackages = true;
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit username; };
-    users.${username}.imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
+    users.${username} = {
+      imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
+      local.slack.enable = true;
+      targets.darwin.copyApps.enable = true;
+      targets.darwin.linkApps.enable = false;
+    };
   };
 
   environment.systemPackages = with pkgs; [

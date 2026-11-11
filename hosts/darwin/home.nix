@@ -27,7 +27,6 @@
   };
 
   local.sopsUserKey.enable = true;
-  local.slack.enable = true;
 
   sops.secrets."data/git_email" = {
     sopsFile = ../../secrets/secrets.yaml;
