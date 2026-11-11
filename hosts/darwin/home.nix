@@ -16,6 +16,7 @@
     ../../modules/shared/dock
     ../../modules/shared/hushlogin
     ../../modules/shared/vscode
+    ../../modules/shared/slack
     ../../modules/shared/neovim
     ../../modules/shared/git-signing
     ../../modules/aspects/features/shell/default.nix
@@ -26,6 +27,7 @@
   };
 
   local.sopsUserKey.enable = true;
+  local.slack.enable = true;
 
   sops.secrets."data/git_email" = {
     sopsFile = ../../secrets/secrets.yaml;
