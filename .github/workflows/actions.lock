@@ -9,7 +9,8 @@ workflows:
         - 'determinatesystems/determinate-nix-action@main'
         - 'determinatesystems/magic-nix-cache-action@main'
     '.github/workflows/ci.yml': []
-    '.github/workflows/dependabot-automerge.yml': []
+    '.github/workflows/dependabot-automerge.yml':
+        - 'dependabot/fetch-metadata@v3.1.0'
     '.github/workflows/flake-checker.yml':
         - 'actions/checkout@v7.0.1'
         - 'determinatesystems/flake-checker-action@main'
@@ -64,6 +65,11 @@ dependencies:
         repo_id: 496012378
         uses:
             - 'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f'
+    'dependabot/fetch-metadata@v3.1.0':
+        ref: 'v3.1.0'
+        commit: 'sha1-25dd0e34f4fe68f24cc83900b1fe3fe149efef98'
+        owner_id: 27347476
+        repo_id: 371068214
     'determinatesystems/determinate-nix-action@main':
         ref: 'main'
         commit: 'sha1-f296148a827001a9a82d3685b53210c06e5d3b67'
