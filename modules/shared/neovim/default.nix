@@ -81,6 +81,10 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [ (lib.hiPrio nvim) ];
+    home.shellAliases = {
+      vi = "nvim";
+      k  = "kubectl";
+    };
     xdg.configFile."nvim" = {
       source = lib.cleanSourceWith {
         src = cfg.source;

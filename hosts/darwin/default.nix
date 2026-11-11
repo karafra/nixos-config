@@ -10,9 +10,14 @@ in
     ../../modules/system/touchid
     ../../modules/system/darwin-upgrade
     ../../modules/system/sops-key
+    ../../modules/system/warp
   ];
 
   local.sopsKey.enable = true;
+  local.warp = {
+    enable = true;
+    team = "karafra-net";
+  };
   networking = host.networking hostname;
 
   system.primaryUser = username;
@@ -48,16 +53,25 @@ in
     useUserPackages = true;
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit username; };
-    users.${username}.imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
+    users.${username} = {
+      imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
+      local.slack.enable = true;
+      targets.darwin.copyApps.enable = true;
+      targets.darwin.linkApps.enable = false;
+    };
   };
 
   environment.systemPackages = with pkgs; [
     age
     git
     jq
+    jsonnet-bundler
+    jsonnet
     yq
     comma
+    helm-docs
     sops
+    jetbrains.rust-rover
     vscode
   ];
 

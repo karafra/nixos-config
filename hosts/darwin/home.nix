@@ -16,6 +16,7 @@
     ../../modules/shared/dock
     ../../modules/shared/hushlogin
     ../../modules/shared/vscode
+    ../../modules/shared/slack
     ../../modules/shared/neovim
     ../../modules/shared/git-signing
     ../../modules/aspects/features/shell/default.nix

@@ -1,0 +1,28 @@
+apiVersion: kubectl.config.k8s.io/v1beta1
+kind: Preference
+aliases:
+  - name: po
+    command: get
+    prependArgs:
+      - pods
+  - name: svc
+    command: get
+    prependArgs:
+      - services
+  - name: deploy
+    command: get
+    prependArgs:
+      - deployments
+  - name: ns
+    command: get
+    prependArgs:
+      - namespaces
+  - name: ctx
+    command: config get-contexts
+  - name: usectx
+    command: config use-context
+defaults:
+  - command: delete
+    options:
+      - name: interactive
+        default: "true"

@@ -26,12 +26,12 @@
 
   home.packages = with pkgs; [
     alacritty
-    brave
     chezmoi
     discord
     firefox
     gnomeExtensions.appindicator
     htop
+    jetbrains.rust-rover
     lf
     neovim
     obsidian
