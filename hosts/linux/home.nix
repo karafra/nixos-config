@@ -8,9 +8,12 @@
   imports = [
     ../../modules/shared/home-manager.nix
     ../../modules/shared/dev
+    ../../modules/shared/spotify
     ../../modules/home-manager/default.nix
     ../../modules/aspects/features/shell/default.nix
   ];
+
+  local.spotify.enable = true;
 
   programs.home-manager.enable = true;
 
@@ -35,7 +38,6 @@
     lf
     neovim
     obsidian
-    spotify
     vscode
     wezterm
   ];

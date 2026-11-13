@@ -8,6 +8,8 @@ in
   inherit (host) networking;
 
   home-manager.users.${username} = {
+    local.spotify.enable = true;
+
     targets.darwin.defaults."com.apple.dock" = {
       orientation = "bottom";
       tilesize = 50;
@@ -24,6 +26,7 @@ in
         "/System/Applications/Contacts.app"
         "/System/Applications/Reminders.app"
         "/System/Applications/TV.app"
+        "/Users/${username}/Applications/Home Manager Apps/Spotify.app"
       ];
     };
 
