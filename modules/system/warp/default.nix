@@ -7,8 +7,17 @@ let
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
     <plist version="1.0">
     <dict>
-      <key>organization</key>
-      <string>${cfg.team}</string>
+      <key>configs</key>
+      <array>
+        <dict>
+          <key>organization</key>
+          <string>${cfg.team}</string>
+          <key>display_name</key>
+          <string>${cfg.team}</string>
+          <key>onboarding</key>
+          <false/>
+        </dict>
+      </array>
     </dict>
     </plist>
   '';
