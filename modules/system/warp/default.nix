@@ -62,7 +62,19 @@ in
       launchd.daemons.cloudflare-warp-daemon = {
         serviceConfig = {
           Label = "com.cloudflare.1dot1dot1dot1.macos.warp.daemon";
-          ProgramArguments = [ "${warpApp}/Contents/Resources/CloudflareWARP" ];
+          ProgramArguments = [
+            "/bin/sh"
+            "-c"
+            ''
+              until [ -x "$1" ]; do
+                /usr/bin/logger -t cloudflare-warp "Waiting for WARP daemon executable: $1"
+                /bin/sleep 30
+              done
+              exec "$1"
+            ''
+            "cloudflare-warp"
+            "${warpApp}/Contents/Resources/CloudflareWARP"
+          ];
           KeepAlive = true;
           RunAtLoad = true;
           UserName = "root";

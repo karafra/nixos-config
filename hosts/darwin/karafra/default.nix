@@ -9,6 +9,7 @@ in
 
   home-manager.users.${username} = {
     local.spotify.enable = true;
+    local.spotify.disableAutoStart = true;
 
     targets.darwin.defaults."com.apple.dock" = {
       orientation = "bottom";

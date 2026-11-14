@@ -59,7 +59,10 @@ in
         ../../modules/shared/whatsapp
       ];
       local.whatsapp.enable = true;
-      local.slack.enable = true;
+      local.slack = {
+        enable = true;
+        autoStart = false;
+      };
       targets.darwin.copyApps.enable = true;
       targets.darwin.linkApps.enable = false;
     };

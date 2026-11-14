@@ -43,7 +43,7 @@ in
 
     (lib.mkIf isDarwin {
       # Open the workspace right after the first install so sign-in starts without manual steps.
-      home.activation.slackFirstLogin = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      home.activation.slackFirstLogin = lib.mkIf cfg.autoStart (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         if [ ! -e "${marker}" ]; then
           /bin/mkdir -p "$(dirname "${marker}")"
           /usr/bin/open -a "${slackApp}" || true
@@ -51,7 +51,7 @@ in
           /usr/bin/open "${deepLink}" || true
           : > "${marker}"
         fi
-      '';
+      '');
 
       launchd.agents.slack = lib.mkIf cfg.autoStart {
         enable = true;
