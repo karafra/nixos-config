@@ -13,6 +13,7 @@ let
     </plist>
   '';
   warpApp = "${pkgs.cloudflare-warp}/Applications/Cloudflare WARP.app";
+  installedWarpApp = "/Applications/Nix Apps/Cloudflare WARP.app";
   primaryUser = config.system.primaryUser;
   primaryHome = config.users.users.${primaryUser}.home;
 in
@@ -34,8 +35,19 @@ in
       system.activationScripts.postActivation.text = lib.mkOrder 2000 ''
         install -d -m 755 -o root -g wheel "/Library/Managed Preferences"
         install -m 644 -o root -g wheel ${plist} "/Library/Managed Preferences/com.cloudflare.warp.plist"
-        ln -sfn ${warpApp} "/Applications/Nix Apps/Cloudflare WARP.app"
         rm -f "/Library/LaunchDaemons/com.cloudflare.warp.updater.plist"
+
+        uid="$(id -u ${lib.escapeShellArg primaryUser})"
+        while read -r pid processUid command; do
+          if [ "$processUid" = "$uid" ]; then
+            case "$command" in
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP|\
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *)
+                kill "$pid"
+                ;;
+            esac
+          fi
+        done < <(ps -axo pid=,uid=,command=)
       '';
 
       launchd.daemons.cloudflare-warp-daemon = {
@@ -54,7 +66,7 @@ in
           ProgramArguments = [
             "/usr/bin/open"
             "-a"
-            warpApp
+            installedWarpApp
           ];
           RunAtLoad = true;
         };
@@ -73,7 +85,8 @@ in
           if [ -f "$agent" ]; then
             target="$(/usr/libexec/PlistBuddy -c 'Print :ProgramArguments:2' "$agent")"
             case "$target" in
-              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app)
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app|\
+              "/Applications/Nix Apps/Cloudflare WARP.app")
                 if launchctl print "gui/$uid/$label" >/dev/null 2>&1; then
                   launchctl bootout "gui/$uid/$label"
                 fi
@@ -90,7 +103,9 @@ in
           if [ "$processUid" = "$uid" ]; then
             case "$command" in
               /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP|\
-              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *)
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *|\
+              "/Applications/Nix Apps/Cloudflare WARP.app/Contents/MacOS/Cloudflare WARP"|\
+              "/Applications/Nix Apps/Cloudflare WARP.app/Contents/MacOS/Cloudflare WARP "*)
                 kill "$pid"
                 ;;
             esac
