@@ -26,6 +26,7 @@ in
         "/System/Applications/Contacts.app"
         "/System/Applications/Reminders.app"
         "/System/Applications/TV.app"
+        "/Users/${username}/Applications/Home Manager Apps/WhatsApp.app"
         "/Users/${username}/Applications/Home Manager Apps/Spotify.app"
       ];
     };

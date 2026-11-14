@@ -54,7 +54,11 @@ in
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit username; };
     users.${username} = {
-      imports = [ ./home.nix ];
+      imports = [
+        ./home.nix
+        ../../modules/shared/whatsapp
+      ];
+      local.whatsapp.enable = true;
       local.slack.enable = true;
       targets.darwin.copyApps.enable = true;
       targets.darwin.linkApps.enable = false;
