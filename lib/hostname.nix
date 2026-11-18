@@ -1,9 +1,9 @@
-{ }:
+{ hostname }:
 
 {
-  networking = name: {
-    hostName = name;
-    computerName = name;
-    localHostName = name;
+  networking = {
+    hostName = hostname;
+    computerName = hostname;
+    localHostName = hostname;
   };
 }

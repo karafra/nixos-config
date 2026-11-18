@@ -1,7 +1,7 @@
 { config, pkgs, lib, username, hostname, ... }:
 
 let
-  host = import ../../lib/hostname.nix { };
+  host = import ../../lib/hostname.nix { inherit hostname; };
   locale = import ../../lib/locale.nix { };
 in
 
@@ -11,14 +11,14 @@ in
     ../../modules/system/darwin-upgrade
     ../../modules/system/sops-key
     ../../modules/system/warp
-  ];
+  ] ++ lib.optional (builtins.pathExists ./${username}/default.nix) ./${username};
 
   local.sopsKey.enable = true;
   local.warp = {
     enable = true;
     team = "karafra-net";
   };
-  networking = host.networking hostname;
+  networking = lib.mkDefault host.networking;
 
   system.primaryUser = username;
   system.stateVersion = 5;
@@ -54,8 +54,15 @@ in
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit username; };
     users.${username} = {
-      imports = [ ./home.nix ] ++ lib.optional (builtins.pathExists ./${username}) ./${username};
-      local.slack.enable = true;
+      imports = [
+        ./home.nix
+        ../../modules/shared/whatsapp
+      ];
+      local.whatsapp.enable = true;
+      local.slack = {
+        enable = true;
+        autoStart = false;
+      };
       targets.darwin.copyApps.enable = true;
       targets.darwin.linkApps.enable = false;
     };
@@ -66,7 +73,7 @@ in
     git
     jq
     jsonnet-bundler
-    jsonnet
+    go-jsonnet
     yq
     comma
     helm-docs

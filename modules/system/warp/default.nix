@@ -7,12 +7,22 @@ let
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
     <plist version="1.0">
     <dict>
-      <key>organization</key>
-      <string>${cfg.team}</string>
+      <key>configs</key>
+      <array>
+        <dict>
+          <key>organization</key>
+          <string>${cfg.team}</string>
+          <key>display_name</key>
+          <string>${cfg.team}</string>
+          <key>onboarding</key>
+          <false/>
+        </dict>
+      </array>
     </dict>
     </plist>
   '';
   warpApp = "${pkgs.cloudflare-warp}/Applications/Cloudflare WARP.app";
+  installedWarpApp = "/Applications/Nix Apps/Cloudflare WARP.app";
   primaryUser = config.system.primaryUser;
   primaryHome = config.users.users.${primaryUser}.home;
 in
@@ -34,14 +44,37 @@ in
       system.activationScripts.postActivation.text = lib.mkOrder 2000 ''
         install -d -m 755 -o root -g wheel "/Library/Managed Preferences"
         install -m 644 -o root -g wheel ${plist} "/Library/Managed Preferences/com.cloudflare.warp.plist"
-        ln -sfn ${warpApp} "/Applications/Nix Apps/Cloudflare WARP.app"
         rm -f "/Library/LaunchDaemons/com.cloudflare.warp.updater.plist"
+
+        uid="$(id -u ${lib.escapeShellArg primaryUser})"
+        while read -r pid processUid command; do
+          if [ "$processUid" = "$uid" ]; then
+            case "$command" in
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP|\
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *)
+                kill "$pid"
+                ;;
+            esac
+          fi
+        done < <(ps -axo pid=,uid=,command=)
       '';
 
       launchd.daemons.cloudflare-warp-daemon = {
         serviceConfig = {
           Label = "com.cloudflare.1dot1dot1dot1.macos.warp.daemon";
-          ProgramArguments = [ "${warpApp}/Contents/Resources/CloudflareWARP" ];
+          ProgramArguments = [
+            "/bin/sh"
+            "-c"
+            ''
+              until [ -x "$1" ]; do
+                /usr/bin/logger -t cloudflare-warp "Waiting for WARP daemon executable: $1"
+                /bin/sleep 30
+              done
+              exec "$1"
+            ''
+            "cloudflare-warp"
+            "${warpApp}/Contents/Resources/CloudflareWARP"
+          ];
           KeepAlive = true;
           RunAtLoad = true;
           UserName = "root";
@@ -54,7 +87,7 @@ in
           ProgramArguments = [
             "/usr/bin/open"
             "-a"
-            warpApp
+            installedWarpApp
           ];
           RunAtLoad = true;
         };
@@ -73,7 +106,8 @@ in
           if [ -f "$agent" ]; then
             target="$(/usr/libexec/PlistBuddy -c 'Print :ProgramArguments:2' "$agent")"
             case "$target" in
-              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app)
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app|\
+              "/Applications/Nix Apps/Cloudflare WARP.app")
                 if launchctl print "gui/$uid/$label" >/dev/null 2>&1; then
                   launchctl bootout "gui/$uid/$label"
                 fi
@@ -90,7 +124,9 @@ in
           if [ "$processUid" = "$uid" ]; then
             case "$command" in
               /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP|\
-              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *)
+              /nix/store/*-cloudflare-warp*/Applications/Cloudflare\ WARP.app/Contents/MacOS/Cloudflare\ WARP\ *|\
+              "/Applications/Nix Apps/Cloudflare WARP.app/Contents/MacOS/Cloudflare WARP"|\
+              "/Applications/Nix Apps/Cloudflare WARP.app/Contents/MacOS/Cloudflare WARP "*)
                 kill "$pid"
                 ;;
             esac
