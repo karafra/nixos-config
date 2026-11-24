@@ -45,11 +45,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1794906521,
-        "narHash": "sha256-B3ox9O5jQ7/RU2IECjP6MtA0BRqL9+yunGJRow0c1gA=",
+        "lastModified": 1795211253,
+        "narHash": "sha256-+D3rJtctvrl87Ril04jvhJRIOrMklX2uUSYhaw7NzKo=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "d9da8426d86bd7e937226f5ecef1df1504ead2e8",
+        "rev": "54987e6989ccce11f61f2f58d6a633f732eb6d59",
         "type": "github"
       },
       "original": {
